@@ -1364,6 +1364,8 @@ class ProjectOptionsSerializer(BaseSerializer):
 
 
 class ExecutionEnvironmentSerializer(BaseSerializer):
+    show_capabilities = ['edit', 'delete']
+
     class Meta:
         model = ExecutionEnvironment
         fields = ('*', '-name', 'organization', 'image', 'managed_by_tower', 'credential')
