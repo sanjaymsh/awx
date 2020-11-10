@@ -29,7 +29,7 @@ DEV_DOCKER_TAG_BASE ?= gcr.io/ansible-tower-engineering
 SRC_ONLY_PKGS ?= cffi,pycparser,psycopg2,twilio,pycurl
 # These should be upgraded in the AWX and Ansible venv before attempting
 # to install the actual requirements
-VENV_BOOTSTRAP ?= pip==19.3.1 setuptools==41.6.0
+VENV_BOOTSTRAP ?= pip==20.2.4 setuptools==50.3.2
 
 # Determine appropriate shasum command
 UNAME_S := $(shell uname -s)
@@ -190,12 +190,14 @@ requirements_ansible_py3: virtualenv_ansible_py3
 	else \
 	    cat requirements/requirements_ansible.txt requirements/requirements_ansible_git.txt | PYCURL_SSL_LIBRARY=$(PYCURL_SSL_LIBRARY) $(VENV_BASE)/ansible/bin/pip3 install $(PIP_OPTIONS) --no-binary $(SRC_ONLY_PKGS) -r /dev/stdin ; \
 	fi
-	$(VENV_BASE)/ansible/bin/pip3 uninstall --yes -r requirements/requirements_ansible_uninstall.txt
+	virtualenv -p $(PYTHON) $(VENV_BASE)/ansible; \
+	$(VENV_BASE)/ansible/bin/pip3 uninstall --yes -r requirements/requirements_ansible_uninstall.txt; \
 	# Same effect as using --system-site-packages flag on venv creation
-	rm $(shell ls -d $(VENV_BASE)/ansible/lib/python* | head -n 1)/no-global-site-packages.txt
+	rm $(shell ls -d $(VENV_BASE)/ansible/lib/python* | head -n 1)/no-global-site-packages.txt; \
 
 requirements_ansible_dev:
 	if [ "$(VENV_BASE)" ]; then \
+		virtualenv -p $(PYTHON) $(VENV_BASE)/ansible; \
 		$(VENV_BASE)/ansible/bin/pip install pytest mock; \
 	fi
 
@@ -207,10 +209,14 @@ requirements_awx: virtualenv_awx
 	else \
 	    cat requirements/requirements.txt requirements/requirements_git.txt | $(VENV_BASE)/awx/bin/pip install $(PIP_OPTIONS) --no-binary $(SRC_ONLY_PKGS) -r /dev/stdin ; \
 	fi
-	$(VENV_BASE)/awx/bin/pip uninstall --yes -r requirements/requirements_tower_uninstall.txt
+	virtualenv -p $(PYTHON) $(VENV_BASE)/awx; \
+	$(VENV_BASE)/awx/bin/pip uninstall --yes -r requirements/requirements_tower_uninstall.txt; \
 
-requirements_awx_dev:
-	$(VENV_BASE)/awx/bin/pip install -r requirements/requirements_dev.txt
+requirements_awx_dev: virtualenv_awx
+	if [ "$(VENV_BASE)" ]; then \
+		virtualenv -p $(PYTHON) $(VENV_BASE)/awx; \
+		$(VENV_BASE)/awx/bin/pip install -r requirements/requirements_dev.txt; \
+	fi
 
 requirements_collections:
 	mkdir -p $(COLLECTION_BASE)
