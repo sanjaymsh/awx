@@ -69,6 +69,7 @@ RUN cd /tmp && make requirements_awx requirements_ansible_py3
 RUN cd /tmp && make requirements_collections
 
 {% if build_dev|bool %}
+RUN dnf -y install libjpeg-devel
 ADD requirements/requirements_dev.txt /tmp/requirements
 RUN cd /tmp && make requirements_awx_dev requirements_ansible_dev
 {% endif %}
