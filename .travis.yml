@@ -1,0 +1,6 @@
+arch:
+   - amd64
+   - ppc64le
+script:
+   - cp awx/settings/local_settings.py.docker_compose awx/settings/local_settings.py
+   - make docker-compose-build
