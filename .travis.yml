@@ -2,6 +2,7 @@ arch:
    - amd64
    - ppc64le
 before_script:
+   - if [ "TRAVIS_ARCH" = "amd64" ]; then sudo apt update && sudo apt install -y software-properties-common && sudo apt-add-repository --yes ppa:ansible/ansible; fi
    - sudo apt install -y ansible   
 script:
    - cp awx/settings/local_settings.py.docker_compose awx/settings/local_settings.py

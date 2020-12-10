@@ -117,7 +117,7 @@ RUN dnf -y install \
 RUN dnf -y update && \
     dnf -y install epel-release 'dnf-command(config-manager)' && \
     dnf module -y enable 'postgresql:10' && \
-    dnf config-manager --set-enabled PowerTools && \
+    dnf config-manager --set-enabled powertools && \
     dnf -y install acl \
     ansible \
     bubblewrap \
