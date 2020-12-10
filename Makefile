@@ -196,6 +196,7 @@ requirements_ansible_py3: virtualenv_ansible_py3
 
 requirements_ansible_dev:
 	if [ "$(VENV_BASE)" ]; then \
+		virtualenv -p $(PYTHON) $(VENV_BASE)/ansible; \
 		$(VENV_BASE)/ansible/bin/pip install pytest mock; \
 	fi
 
@@ -210,8 +211,10 @@ requirements_awx: virtualenv_awx
 	$(VENV_BASE)/awx/bin/pip uninstall --yes -r requirements/requirements_tower_uninstall.txt
 
 requirements_awx_dev:
-	$(VENV_BASE)/awx/bin/pip install -r requirements/requirements_dev.txt
-
+	if [ "$(VENV_BASE)" ]; then \
+		virtualenv -p $(PYTHON) $(VENV_BASE)/awx; \
+		$(VENV_BASE)/awx/bin/pip install -r requirements/requirements_dev.txt; \
+	fi
 requirements_collections:
 	mkdir -p $(COLLECTION_BASE)
 	n=0; \
