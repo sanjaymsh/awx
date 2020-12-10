@@ -6,4 +6,5 @@ before_script:
    - sudo apt-get install -y ansible   
 script:
    - cp awx/settings/local_settings.py.docker_compose awx/settings/local_settings.py
-   - make docker-compose-build
+     #   - make docker-compose-build
+   - make ui-devel
